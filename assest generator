@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Raver - Asset Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff88;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .asset-card {
+            background: #16213e;
+            border: 2px solid #0f3460;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .asset-card h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .canvas-container {
+            background: #0a0a0a;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        canvas {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            border: 1px solid #444;
+        }
+        
+        button {
+            background: #00ff88;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #00cc70;
+            transform: scale(1.05);
+        }
+        
+        .info {
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        
+        .download-all {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .download-all button {
+            font-size: 16px;
+            padding: 15px 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Resident Raver - Asset Generator</h1>
+        
+        <div class="download-all">
+            <button onclick="downloadAll()">📦 Download All Assets as ZIP</button>
+        </div>
+        
+        <div class="grid">
+            <!-- Player -->
+            <div class="asset-card">
+                <h2>Player Sprite</h2>
+                <div class="canvas-container">
+                    <canvas id="player" width="320" height="16"></canvas>
+                </div>
+                <button onclick="downloadCanvas('player', 'player.png')">Download player.png</button>
+                <div class="info">16x16px, 20 frames (10 with gun, 10 without)</div>
+            </div>
+            
+            <!-- Zombie -->
+            <div class="asset-card">
+                <h2>Zombie Sprite</h2>
+                <div class="canvas-container">
+                    <canvas id="zombie" width="96" height="16"></canvas>
+                </div>
+                <button onclick="downloadCanvas('zombie', 'zombie.png')">Download zombie.png</button>
+                <div class="info">16x16px, 6 frames walking animation</div>
+            </div>
+            
+            <!-- Bullet -->
+            <div class="asset-card">
+                <h2>Bullet</h2>
+                <div class="canvas-container">
+                    <canvas id="bullet" width="5" height="3"></canvas>
+                </div>
+                <button onclick="downloadCanvas('bullet', 'bullet.png')">Download bullet.png</button>
+                <div class="info">5x3px, single frame</div>
+            </div>
+            
+            <!-- Grenade -->
+            <div class="asset-card">
+                <h2>Grenade</h2>
+                <div class="canvas-container">
+                    <canvas id="grenade" width="16" height="8"></canvas>
+                </div>
+                <button onclick="downloadCanvas('grenade', 'grenade.png')">Download grenade.png</button>
+                <div class="info">8x8px, 2 frames rotation</div>
+            </div>
+            
+            <!-- Blood -->
+            <div class="asset-card">
+                <h2>Blood Particles</h2>
+                <div class="canvas-container">
+                    <canvas id="blood" width="32" height="2"></canvas>
+                </div>
+                <button onclick="downloadCanvas('blood', 'blood.png')">Download blood.png</button>
+                <div class="info">2x2px, 16 frames (8 red, 8 green)</div>
+            </div>
+            
+            <!-- Explosion -->
+            <div class="asset-card">
+                <h2>Explosion Particles</h2>
+                <div class="canvas-container">
+                    <canvas id="explosion" width="8" height="1"></canvas>
+                </div>
+                <button onclick="downloadCanvas('explosion', 'explosion.png')">Download explosion.png</button>
+                <div class="info">1x1px, 8 orange/yellow shades</div>
+            </div>
+            
+            <!-- Tiles -->
+            <div class="asset-card">
+                <h2>Dorm Tiles</h2>
+                <div class="canvas-container">
+                    <canvas id="tiles" width="64" height="16"></canvas>
+                </div>
+                <button onclick="downloadCanvas('tiles', 'dorm-tiles.png')">Download dorm-tiles.png</button>
+                <div class="info">16x16px, 4 tile types</div>
+            </div>
+            
+            <!-- Font -->
+            <div class="asset-card">
+                <h2>Bitmap Font</h2>
+                <div class="canvas-container">
+                    <canvas id="font" width="256" height="64"></canvas>
+                </div>
+                <button onclick="downloadCanvas('font', '04b03.font.png')">Download 04b03.font.png</button>
+                <div class="info">Bitmap font for HUD text</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Player sprite generation
+        function drawPlayer() {
+            const canvas = document.getElementById('player');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // With gun (frames 0-9)
+            for (let i = 0; i < 10; i++) {
+                const x = i * 16;
+                
+                // Body
+                ctx.fillStyle = '#ff4444';
+                ctx.fillRect(x + 4, 4, 8, 10);
+                
+                // Head
+                ctx.fillStyle = '#ffccaa';
+                ctx.fillRect(x + 5, 2, 6, 4);
+                
+                // Gun
+                ctx.fillStyle = '#666666';
+                ctx.fillRect(x + (i % 2 ? 11 : 3), 7, 3, 2);
+                
+                // Legs (animation)
+                ctx.fillStyle = '#3333cc';
+                if (i >= 1 && i <= 5) {
+                    ctx.fillRect(x + 5 + (i % 2 ? 2 : 0), 14, 2, 2);
+                    ctx.fillRect(x + 7 + (i % 2 ? 0 : 2), 14, 2, 2);
+                } else {
+                    ctx.fillRect(x + 5, 14, 2, 2);
+                    ctx.fillRect(x + 9, 14, 2, 2);
+                }
+            }
+            
+            // Without gun (frames 10-19)
+            for (let i = 10; i < 20; i++) {
+                const x = i * 16;
+                const frame = i - 10;
+                
+                // Body
+                ctx.fillStyle = '#ff4444';
+                ctx.fillRect(x + 4, 4, 8, 10);
+                
+                // Head
+                ctx.fillStyle = '#ffccaa';
+                ctx.fillRect(x + 5, 2, 6, 4);
+                
+                // Arms (extended for throwing)
+                ctx.fillStyle = '#ffccaa';
+                ctx.fillRect(x + (frame % 2 ? 11 : 3), 6, 2, 4);
+                
+                // Legs
+                ctx.fillStyle = '#3333cc';
+                if (frame >= 1 && frame <= 5) {
+                    ctx.fillRect(x + 5 + (frame % 2 ? 2 : 0), 14, 2, 2);
+                    ctx.fillRect(x + 7 + (frame % 2 ? 0 : 2), 14, 2, 2);
+                } else {
+                    ctx.fillRect(x + 5, 14, 2, 2);
+                    ctx.fillRect(x + 9, 14, 2, 2);
+                }
+            }
+        }
+        
+        // Zombie sprite generation
+        function drawZombie() {
+            const canvas = document.getElementById('zombie');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            for (let i = 0; i < 6; i++) {
+                const x = i * 16;
+                
+                // Body
+                ctx.fillStyle = '#44ff44';
+                ctx.fillRect(x + 4, 4, 8, 10);
+                
+                // Head
+                ctx.fillStyle = '#88ff88';
+                ctx.fillRect(x + 5, 2, 6, 4);
+                
+                // Eyes
+                ctx.fillStyle = '#ff0000';
+                ctx.fillRect(x + 6, 3, 1, 1);
+                ctx.fillRect(x + 9, 3, 1, 1);
+                
+                // Legs (animated)
+                ctx.fillStyle = '#226622';
+                ctx.fillRect(x + 5 + (i % 2 ? 2 : 0), 14, 2, 2);
+                ctx.fillRect(x + 7 + (i % 2 ? 0 : 2), 14, 2, 2);
+            }
+        }
+        
+        // Bullet
+        function drawBullet() {
+            const canvas = document.getElementById('bullet');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(0, 0, 5, 3);
+            ctx.fillStyle = '#ffaa00';
+            ctx.fillRect(0, 1, 2, 1);
+        }
+        
+        // Grenade
+        function drawGrenade() {
+            const canvas = document.getElementById('grenade');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // Frame 0
+            ctx.fillStyle = '#228822';
+            ctx.fillRect(2, 2, 4, 4);
+            ctx.fillStyle = '#114411';
+            ctx.fillRect(3, 1, 2, 2);
+            
+            // Frame 1 (rotated)
+            ctx.fillStyle = '#228822';
+            ctx.fillRect(10, 2, 4, 4);
+            ctx.fillStyle = '#114411';
+            ctx.fillRect(11, 4, 2, 2);
+        }
+        
+        // Blood particles
+        function drawBlood() {
+            const canvas = document.getElementById('blood');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            const reds = ['#ff0000', '#cc0000', '#ff3333', '#ff6666', '#aa0000', '#ff1111', '#dd0000', '#ff4444'];
+            const greens = ['#00ff00', '#00cc00', '#33ff33', '#66ff66', '#00aa00', '#11ff11', '#00dd00', '#44ff44'];
+            
+            // Red blood (frames 0-7)
+            reds.forEach((color, i) => {
+                ctx.fillStyle = color;
+                ctx.fillRect(i * 2, 0, 2, 2);
+            });
+            
+            // Green blood (frames 8-15)
+            greens.forEach((color, i) => {
+                ctx.fillStyle = color;
+                ctx.fillRect((i + 8) * 2, 0, 2, 2);
+            });
+        }
+        
+        // Explosion particles
+        function drawExplosion() {
+            const canvas = document.getElementById('explosion');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            const colors = ['#ff8800', '#ff6600', '#ffaa00', '#ff9900', '#ff7700', '#ffbb00', '#ff5500', '#ffcc00'];
+            
+            colors.forEach((color, i) => {
+                ctx.fillStyle = color;
+                ctx.fillRect(i, 0, 1, 1);
+            });
+        }
+        
+        // Tiles
+        function drawTiles() {
+            const canvas = document.getElementById('tiles');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            // Tile 0: Empty (transparent)
+            
+            // Tile 1: Wall
+            ctx.fillStyle = '#666666';
+            ctx.fillRect(16, 0, 16, 16);
+            ctx.fillStyle = '#888888';
+            ctx.fillRect(17, 1, 14, 14);
+            ctx.fillStyle = '#444444';
+            for (let i = 0; i < 4; i++) {
+                ctx.fillRect(18 + i * 4, 2, 2, 2);
+                ctx.fillRect(18 + i * 4, 6, 2, 2);
+                ctx.fillRect(18 + i * 4, 10, 2, 2);
+            }
+            
+            // Tile 2: Ground
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(32, 0, 16, 16);
+            ctx.fillStyle = '#A0522D';
+            ctx.fillRect(33, 1, 14, 3);
+            ctx.fillStyle = '#654321';
+            for (let i = 0; i < 5; i++) {
+                ctx.fillRect(33 + Math.random() * 10, 5 + Math.random() * 8, 2, 2);
+            }
+            
+            // Tile 3: Underground
+            ctx.fillStyle = '#654321';
+            ctx.fillRect(48, 0, 16, 16);
+            ctx.fillStyle = '#543210';
+            for (let i = 0; i < 8; i++) {
+                ctx.fillRect(49 + Math.random() * 12, 1 + Math.random() * 12, 2, 2);
+            }
+        }
+        
+        // Font
+        function drawFont() {
+            const canvas = document.getElementById('font');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '8px monospace';
+            
+            const chars = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+            
+            for (let i = 0; i < chars.length; i++) {
+                const x = (i % 32) * 8;
+                const y = Math.floor(i / 32) * 16 + 10;
+                ctx.fillText(chars[i], x, y);
+            }
+        }
+        
+        // Download function
+        function downloadCanvas(id, filename) {
+            const canvas = document.getElementById(id);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Download all as ZIP
+        async function downloadAll() {
+            alert('Individual download is currently supported. Click each "Download" button to save all assets.');
+        }
+        
+        // Initialize all canvases
+        window.onload = function() {
+            drawPlayer();
+            drawZombie();
+            drawBullet();
+            drawGrenade();
+            drawBlood();
+            drawExplosion();
+            drawTiles();
+            drawFont();
+            
+            // Scale up canvases for visibility
+            document.querySelectorAll('canvas').forEach(canvas => {
+                const scale = Math.min(10, 160 / Math.max(canvas.width, canvas.height));
+                canvas.style.width = (canvas.width * scale) + 'px';
+                canvas.style.height = (canvas.height * scale) + 'px';
+            });
+        };
+    </script>
+</body>
+</html>
