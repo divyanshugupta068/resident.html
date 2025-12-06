@@ -1,1 +1,48 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weltmeister Level Editor</title>
+    <meta charset="UTF-8">
+    <style>
+        /* Note: Full Weltmeister has extensive CSS */
+        body { margin: 0; padding: 0; font-family: Arial; background: #222; color: #fff; }
+        #canvas { border: 1px solid #fff; }
+        .menu { background: #333; padding: 10px; }
+        .layers { position: fixed; right: 0; top: 0; background: #444; width: 200px; }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <button id="save">Save</button>
+        <button id="load">Load</button>
+        <button id="newLayer">New Layer</button>
+        <span>Level: <input type="text" id="levelName" value="untitled.js"></span>
+    </div>
+    
+    <canvas id="canvas" width="800" height="600"></canvas>
+    
+    <div class="layers">
+        <h3>Layers</h3>
+        <div id="layerList"></div>
+        <h3>Entity Settings</h3>
+        <div id="entitySettings"></div>
+    </div>
+    
+    <script src="../lib/impact/impact.js"></script>
+    <script>
+        // Note: Full Weltmeister is much more complex
+        // This requires the complete Impact.js engine
+        // Purchase from impactjs.com for full editor
+        
+        ig.module('weltmeister.weltmeister')
+        .requires(
+            'dom.ready',
+            'weltmeister.config'
+        )
+        .defines(function(){ "use strict";
+            // Weltmeister main code here
+            // Full implementation comes with Impact.js purchase
+        });
+    </script>
+</body>
+</html>
